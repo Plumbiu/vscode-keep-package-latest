@@ -1,11 +1,12 @@
 {
   "name": "vscode-keep-package-latest",
-  "displayName": "vscode-keep-package-latest",
+  "displayName": "Package Version Updater",
   "description": "Display the latest version of packages in your package.json file.",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.84.0"
   },
+  "publisher": "plumbiu",
   "categories": [
     "Other"
   ],
@@ -21,6 +22,11 @@
         "enablement": "resourceFilename == package.json"
       }
     ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Plumbiu/vscode-keep-package-latest",
+    "directory": "extension"
   },
   "scripts": {
     "vscode:prepublish": "pnpm run build",
