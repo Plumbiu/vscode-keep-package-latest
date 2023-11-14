@@ -19,8 +19,7 @@ export function activate(ctx: ExtensionContext) {
   const workspaces = folders
     .map((item) => item.uri.fsPath)
     .filter((item) => fs.existsSync(path.join(item, 'package.json')))
-  const pkgJsonObj: Record<string, InlayHint[]> = {}
-
+  const pkgJsonMap: Map<string, InlayHint[]> = new Map()
   for (const workspace of workspaces) {
     glob('**/package.json', {
       absolute: true,
@@ -42,14 +41,12 @@ export function activate(ctx: ExtensionContext) {
           ]
           for (const { name, idx, len } of needed) {
             exec(`npm view ${name} version`, (_err, v) => {
-              const hint = createHint([idx, len], v)
-              hints.push(hint)
-              if (pkgJsonObj[pkgPath]) {
-                pkgJsonObj[pkgPath].push(hint)
-              } else {
-                pkgJsonObj[pkgPath] = []
+              if (!v) {
+                return
               }
+              hints.push(createHint([idx, len], v))
             })
+            pkgJsonMap.set(pkgPath, hints)
           }
         })
       }
@@ -63,7 +60,7 @@ export function activate(ctx: ExtensionContext) {
       },
       {
         provideInlayHints(document) {
-          return pkgJsonObj[document.uri.path.slice(1)]
+          return pkgJsonMap.get(document.uri.path.slice(1))
         },
       },
     )

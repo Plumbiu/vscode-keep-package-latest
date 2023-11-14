@@ -3,7 +3,7 @@ import { InlayHint, Position } from 'vscode'
 function findIndex(arr: string[], dep: string) {
   for (let i = 0; i < arr.length; i++) {
     if (arr[i].includes(dep)) {
-      return i
+      return i + 1
     }
   }
   return undefined
@@ -15,7 +15,6 @@ export function findDepsLineStart(fileLines: string[]) {
   if (depStart) {
     depEnd = findIndex(fileLines.slice(depStart), '}')! + depStart
   }
-  // eslint-disable-next-line @stylistic/max-len
   const devDepStart = findIndex(fileLines, '"devDependencies":')
   let devDepEnd = undefined
   if (devDepStart) {
