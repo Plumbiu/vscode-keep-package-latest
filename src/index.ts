@@ -1,6 +1,6 @@
 import fs from 'node:fs'
-import path from 'node:path'
 import { exec } from 'node:child_process'
+import path from 'node:path'
 import {
   type ExtensionContext,
   InlayHint,
@@ -8,6 +8,7 @@ import {
   commands,
   languages,
 } from 'vscode'
+import { glob } from 'fast-glob'
 import { createHint, createNeededArr, findDepsLineStart } from './utils.js'
 
 export function activate(ctx: ExtensionContext) {
@@ -15,42 +16,43 @@ export function activate(ctx: ExtensionContext) {
   if (!folders || !folders.length) {
     return
   }
-  // TODO: pnpm、yarn monnrepo support
-  const workspaces = folders.map((item) => item.uri.fsPath)
+  const workspaces = folders
+    .map((item) => item.uri.fsPath)
+    .filter((item) => fs.existsSync(path.join(item, 'package.json')))
   const pkgJsonObj: Record<string, InlayHint[]> = {}
+
   for (const workspace of workspaces) {
-    const pkgPath = path.join(workspace, 'package.json')
-    fs.readFile(pkgPath, 'utf-8', (err, file) => {
-      if (err) {
-        return
-      }
-      const files = file.split(/\r?\n/)
-      // console.log({ files })
-      const { depStart, devDepStart, depEnd, devDepEnd } =
-        findDepsLineStart(files)
-      if (!depStart && !devDepStart) {
-        return
-      }
-      const hints: InlayHint[] = []
-      const needed = [
-        ...createNeededArr(files, depStart, depEnd),
-        ...createNeededArr(files, devDepStart, devDepEnd),
-      ]
-      for (const { name, idx, len } of needed) {
-        exec(`npm view ${name} version`, (err, v) => {
-          if (err) {
+    glob('**/package.json', {
+      absolute: true,
+      cwd: workspace,
+      ignore: ['**/node_modules', 'dist', 'test'],
+    }).then((pkgs) => {
+      for (const pkgPath of pkgs) {
+        fs.readFile(pkgPath, 'utf-8', (_err, file) => {
+          const files = file.split(/\r?\n/)
+          const { depStart, devDepStart, depEnd, devDepEnd } =
+            findDepsLineStart(files)
+          if (!depStart && !devDepStart) {
             return
           }
-          const hint = createHint([idx, len], v)
-          hints.push(hint)
-          if (pkgJsonObj[pkgPath]) {
-            pkgJsonObj[pkgPath].push(hint)
-          } else {
-            pkgJsonObj[pkgPath] = []
+          const hints: InlayHint[] = []
+          const needed = [
+            ...createNeededArr(files, depStart, depEnd),
+            ...createNeededArr(files, devDepStart, devDepEnd),
+          ]
+          for (const { name, idx, len } of needed) {
+            exec(`npm view ${name} version`, (_err, v) => {
+              const hint = createHint([idx, len], v)
+              hints.push(hint)
+              if (pkgJsonObj[pkgPath]) {
+                pkgJsonObj[pkgPath].push(hint)
+              } else {
+                pkgJsonObj[pkgPath] = []
+              }
+            })
           }
         })
       }
-      // console.log({ hints })
     })
   }
 
@@ -61,7 +63,7 @@ export function activate(ctx: ExtensionContext) {
       },
       {
         provideInlayHints(document) {
-          return pkgJsonObj[document.uri.fsPath]
+          return pkgJsonObj[document.uri.path.slice(1)]
         },
       },
     )

@@ -17,6 +17,6 @@ serach `Package Version Updater` in vscode marketplace, or go to [vscode-marketp
 
 # Todo
 
-- [] pnpm, yarn monorepo support
+- [x] pnpm, yarn monorepo support
 - [] stroage latest version
 - [] fetch loading
