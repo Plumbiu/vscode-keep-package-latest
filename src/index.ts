@@ -25,8 +25,7 @@ export function activate(ctx: ExtensionContext) {
         return
       }
       const files = file.split(/\r?\n/)
-      console.log({ files })
-
+      // console.log({ files })
       const { depStart, devDepStart, depEnd, devDepEnd } =
         findDepsLineStart(files)
       if (!depStart && !devDepStart) {
