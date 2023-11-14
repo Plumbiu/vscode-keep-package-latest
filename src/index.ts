@@ -15,7 +15,7 @@ export function activate(ctx: ExtensionContext) {
   if (!folders || !folders.length) {
     return
   }
-  // TODO: pnpm、yarn workspace support
+  // TODO: pnpm、yarn monnrepo support
   const workspaces = folders.map((item) => item.uri.fsPath)
   const pkgJsonObj: Record<string, InlayHint[]> = {}
   for (const workspace of workspaces) {
@@ -32,13 +32,10 @@ export function activate(ctx: ExtensionContext) {
         return
       }
       const hints: InlayHint[] = []
-      console.log({ depStart, devDepStart, depEnd, devDepEnd })
-
       const needed = [
         ...createNeededArr(files, depStart, depEnd),
         ...createNeededArr(files, devDepStart, devDepEnd),
       ]
-
       for (const { name, idx, len } of needed) {
         exec(`npm view ${name} version`, (err, v) => {
           if (err) {
