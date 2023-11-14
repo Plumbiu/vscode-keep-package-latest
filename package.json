@@ -1,0 +1,44 @@
+{
+  "name": "vscode-keep-package-latest",
+  "displayName": "vscode-keep-package-latest",
+  "description": "Display the latest version of packages in your package.json file.",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.84.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "workspaceContains:**/package.json"
+  ],
+  "main": "./dist/index.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "vscode-keep-package-latest.init",
+        "title": "Find latest version",
+        "enablement": "resourceFilename == package.json"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm run build",
+    "build": "tsup ./src/index.ts --external vscode",
+    "watch": "pnpm build --watch src",
+    "lint": "eslint src --ext ts",
+    "test": "vitest --run"
+  },
+  "devDependencies": {
+    "@plumbiu/eslint-config": "^0.1.10",
+    "@types/node": "~20.9.0",
+    "@types/vscode": "^1.84.1",
+    "eslint": "^8.53.0",
+    "tsup": "^7.2.0",
+    "typescript": "^5.2.2",
+    "vitest": "^0.34.6"
+  },
+  "dependencies": {
+    "fast-glob": "^3.3.2"
+  }
+}

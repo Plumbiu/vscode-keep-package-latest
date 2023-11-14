@@ -1,0 +1,7 @@
+{
+  "extends": "@plumbiu",
+  "rules": {
+    "import/no-unresolved": 0,
+    "@stylistic/indent": 0
+  }
+}
