@@ -18,13 +18,12 @@ export function activate(ctx: ExtensionContext) {
   }
   const workspaces = folders
     .map((item) => item.uri.fsPath)
-    .filter((item) => fs.existsSync(path.join(item, 'package.json')))
   const pkgJsonMap: Map<string, InlayHint[]> = new Map()
   for (const workspace of workspaces) {
     glob('**/package.json', {
       absolute: true,
       cwd: workspace,
-      ignore: ['**/node_modules', 'dist', 'test'],
+      ignore: ['**/node_modules'],
     }).then((pkgs) => {
       for (const pkgPath of pkgs) {
         fs.readFile(pkgPath, 'utf-8', (_err, file) => {
