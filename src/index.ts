@@ -1,6 +1,5 @@
 import fs from 'node:fs'
 import { exec } from 'node:child_process'
-import path from 'node:path'
 import {
   type ExtensionContext,
   InlayHint,
