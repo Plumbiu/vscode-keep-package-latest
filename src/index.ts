@@ -46,8 +46,8 @@ export function activate(ctx: ExtensionContext) {
               }
               hints.push(createHint([idx, len], v))
             })
-            pkgJsonMap.set(pkgPath, hints)
           }
+          pkgJsonMap.set(pkgPath, hints)
         })
       }
     })
