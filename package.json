@@ -11,7 +11,7 @@
     "Other"
   ],
   "activationEvents": [
-    "workspaceContains:**/package.json"
+    "workspaceContains:package.json"
   ],
   "main": "./dist/index.js",
   "contributes": {
@@ -43,8 +43,5 @@
     "tsup": "^7.2.0",
     "typescript": "^5.2.2",
     "vitest": "^0.34.6"
-  },
-  "dependencies": {
-    "fast-glob": "^3.3.2"
   }
 }
