@@ -8,7 +8,9 @@
   },
   "publisher": "plumbiu",
   "categories": [
-    "Other"
+    "Debuggers",
+    "Programming Languages",
+    "Visualization"
   ],
   "activationEvents": [
     "workspaceContains:package.json"
@@ -25,8 +27,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Plumbiu/vscode-keep-package-latest",
-    "directory": "extension"
+    "url": "https://github.com/Plumbiu/vscode-keep-package-latest"
   },
   "scripts": {
     "vscode:prepublish": "pnpm run build",
